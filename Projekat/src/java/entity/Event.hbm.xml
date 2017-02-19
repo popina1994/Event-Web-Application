@@ -1,0 +1,97 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated Feb 14, 2017 6:22:12 PM by Hibernate Tools 4.3.1 -->
+<hibernate-mapping>
+    <class name="entity.Event" table="event" catalog="projekat" optimistic-lock="version">
+        <id name="idevent" type="java.lang.Integer">
+            <column name="IDEvent" />
+            <generator class="identity" />
+        </id>
+        <property name="beginDateTime" type="timestamp">
+            <column name="BeginDateTime" length="19" not-null="true">
+                <comment>Pocetno vreme festivala</comment>
+            </column>
+        </property>
+        <property name="endDateTime" type="timestamp">
+            <column name="EndDateTime" length="19" not-null="true">
+                <comment>Krajnje vreme festivala</comment>
+            </column>
+        </property>
+        <property name="ticketPerUser" type="int">
+            <column name="TicketPerUser" not-null="true">
+                <comment>Broj karata raspolozivih za taj festival</comment>
+            </column>
+        </property>
+        <property name="ticketPerDay" type="int">
+            <column name="TicketPerDay" not-null="true">
+                <comment>Broj ulaznica koje su raspolozive tog dana</comment>
+            </column>
+        </property>
+        <property name="cntClick" type="int">
+            <column name="CntClick" not-null="true">
+                <comment>Broj klikova na dati festival</comment>
+            </column>
+        </property>
+        <property name="place" type="string">
+            <column name="Place" length="30" not-null="true">
+                <comment>Mesto na kom ce biti festival</comment>
+            </column>
+        </property>
+        <property name="ticketPriceInd" type="int">
+            <column name="TicketPriceInd" not-null="true">
+                <comment>Cena karte za jedan dan</comment>
+            </column>
+        </property>
+        <property name="ticketPriceFull" type="int">
+            <column name="ticketPriceFull" not-null="true">
+                <comment>Cena karte za sve dane</comment>
+            </column>
+        </property>
+        <property name="info" type="string">
+            <column name="Info" length="65535" not-null="true">
+                <comment>Opis festivala</comment>
+            </column>
+        </property>
+        <property name="name" type="string">
+            <column name="Name" length="50" not-null="true">
+                <comment>Ime festivala</comment>
+            </column>
+        </property>
+        <property name="cancelled" type="boolean">
+            <column name="Cancelled" not-null="true">
+                <comment>Da li je otkazan nastup</comment>
+            </column>
+        </property>
+        <set name="hourses" table="hours" inverse="true" lazy="false" fetch="select">
+            <key>
+                <column name="IDEvent" not-null="true" />
+            </key>
+            <one-to-many class="entity.Hours" />
+        </set>
+        <set name="links" table="link" inverse="true" lazy="false" fetch="select">
+            <key>
+                <column name="IDEvent" not-null="true" />
+            </key>
+            <one-to-many class="entity.Link" />
+        </set>
+        <set name="reservations" table="reservation" inverse="true" lazy="false" fetch="select">
+            <key>
+                <column name="IDEvent" not-null="true" />
+            </key>
+            <one-to-many class="entity.Reservation" />
+        </set>
+        <set name="videos" table="video" inverse="true" lazy="false" fetch="select">
+            <key>
+                <column name="IDEvent" not-null="true" />
+            </key>
+            <one-to-many class="entity.Video" />
+        </set>
+        <set name="pictures" table="picture" inverse="true" lazy="false" fetch="select">
+            <key>
+                <column name="IDEvent" not-null="true" />
+            </key>
+            <one-to-many class="entity.Picture" />
+        </set>
+    </class>
+</hibernate-mapping>

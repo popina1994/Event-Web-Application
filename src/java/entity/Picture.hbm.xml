@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated Feb 14, 2017 6:22:12 PM by Hibernate Tools 4.3.1 -->
+<hibernate-mapping>
+    <class name="entity.Picture" table="picture" catalog="projekat" optimistic-lock="version">
+        <id name="idpicture" type="java.lang.Integer">
+            <column name="IDPicture" />
+            <generator class="identity" />
+        </id>
+        <many-to-one name="event" class="entity.Event" fetch="select">
+            <column name="IDEvent" not-null="true" />
+        </many-to-one>
+        <property name="name" type="string">
+            <column name="Name" length="50" not-null="true" />
+        </property>
+        <property name="path" type="string">
+            <column name="Path" not-null="true" />
+        </property>
+        <property name="approved" type="boolean">
+            <column name="Approved" not-null="true">
+                <comment>Da li je administrator odobrio</comment>
+            </column>
+        </property>
+        <property name="needsApproval" type="boolean">
+            <column name="NeedsApproval" not-null="true">
+                <comment>Da li je administrator odobrio</comment>
+            </column>
+        </property>
+    </class>
+</hibernate-mapping>

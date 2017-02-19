@@ -1,0 +1,218 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:pe="http://primefaces.org/ui/extensions">
+    <h:body>
+       
+        <ui:composition template="/template/masterLayout.xhtml">
+                <ui:define name="head">
+                    <title> Festival</title>
+                </ui:define>
+            <ui:define name="content">
+                <h:form>
+                    <h:outputText value="#{festivalPageController.event.cancelled ?'OTKAZAN' :''}"
+                                  style="font: 400; color: red"/>
+                    <h:outputText value="#{festivalPageController.errorMessage}" 
+                                  style="color:red"/>
+                    <p:panelGrid  columns="2" >
+                        <h:outputText value="Ime festivala"/>
+                        <h:outputText value="#{festivalPageController.event.name}"/>
+                        
+                        <h:outputText value="Mesto odrzavanja"/>
+                        <h:outputText value="#{festivalPageController.event.place}"/>
+                        
+                        <h:outputText value="Datum pocetka festivala"/>
+                        <h:outputText value="#{festivalPageController.event.beginDateTime}">
+                            <f:convertDateTime pattern="dd.MM.yyyy." timeZone="CET"/>
+                        </h:outputText>
+                        
+                        <h:outputText value="Datum kraja festivala"/>
+                        <h:outputText value="#{festivalPageController.event.endDateTime}">
+                            <f:convertDateTime pattern="dd.MM.yyyy." timeZone="CET"/>
+                        </h:outputText>
+                        
+                        <h:outputText value="Cena karata individualno"/>
+                        <h:outputText value="#{festivalPageController.event.ticketPriceInd}"/>
+                        
+                        <h:outputText value="Cena karata ukupno"/>
+                        <h:outputText value="#{festivalPageController.event.ticketPriceFull}"/>
+                        
+                        <h:outputText value="Dodatne informacije o festivalu"/>
+                        <h:outputText value="#{festivalPageController.event.info}"/>
+                        
+                    </p:panelGrid>
+                    <p:dataTable var="hours"  id = "hoursTableThird" value="#{festivalPageController.event.hourses}">
+                        <p:column headerText="Ime izvodjaca">
+                            <center>
+                                    <h:outputText value="#{hours.performer}"/>
+                            </center>
+                        </p:column>
+                        <p:column headerText="Pocetno vreme">
+                            <center>
+                                <h:outputText value="#{hours.startTime}">
+                                    <f:convertDateTime pattern="dd.MM.yyyy. HH:mm" timeZone="CET"/>
+                                </h:outputText>
+                            </center>
+                        </p:column>
+                        <p:column headerText="Krajnje vreme">
+                            <center>
+                                <h:outputText value="#{hours.endTime}">
+                                    <f:convertDateTime pattern="dd.MM.yyyy. HH:mm" timeZone="CET"/>
+                                </h:outputText>
+                            </center>
+                        </p:column>
+                        <p:column headerText="Rezervacija">
+                            <center>
+                            <p:commandButton value="#{festivalPageController.isReserved(hours) ? 'Otkazi' : 'Rezervisi'}"
+                                             action="#{festivalPageController.ReserveOrCancel(hours)}"
+                                             ajax="false" 
+                                             rendered="#{not festivalPageController.user.blocked and homePageController.isRegisteredUser() and not festivalPageController.event.cancelled}"/>
+                            <p:commandButton value="Rezervisi"
+                                             action="#{festivalPageController.ReserveAdmin(hours)}"
+                                             ajax="false" 
+                                             rendered="#{homePageController.isAdmin() and not festivalPageController.event.cancelled}"/>
+                            </center>
+                            
+                        </p:column>
+                    </p:dataTable>
+                    <p:panelGrid columns="2">
+                        <h:outputText value="Rezervacija za ceo festival"/>
+                        <p:commandButton value="#{festivalPageController.isReservedFull() ? 'Otkazi' : 'Rezervisi'}"
+                                         action="#{festivalPageController.reserveOrCancelFull()}"
+                                             ajax="false" update="hoursTableThird"
+                                             rendered="#{not festivalPageController.user.blocked and homePageController.isRegisteredUser() and not festivalPageController.event.cancelled}"/>
+                        <p:inputNumber value="#{festivalPageController.ticketNum}" placeholder="Broj karata"/>
+                    </p:panelGrid>
+                        <p:commandButton value="Rezervisi za ceo festival"
+                                         action="#{festivalPageController.ReserveAdminFull()}"
+                                             ajax="false" update="hoursTableThird"
+                                             rendered="#{homePageController.isAdmin()and not festivalPageController.event.cancelled}"/>
+                    
+                        <p:commandButton value="Otkazi festival"
+                                         action="#{festivalPageController.CancelEventAdmin()}"
+                                             ajax="false" 
+                                             rendered="#{homePageController.isAdmin() and not festivalPageController.event.cancelled}"/>
+                    
+                    
+                      
+                    
+                    <p:galleria effect="slide" value="#{festivalPageController.getApprovedPicutres()}" 
+                                var="picture" showCaption="true" panelWidth="1050">
+                        <p:graphicImage value="#{picture.path}" title="#{picture.name}" 
+                                        width="1000" height="600" />
+                    </p:galleria>
+                    
+                <p:dataTable var="video" id = "videoTableThird" value="#{festivalPageController.event.videos}">
+                    <p:column headerText="Video" rendered="#{video.approved}">
+                        <center>
+                            <video id="myVideo" width="400" controls="controls">
+                                <source src="#{video.path}" type="video/mp4" />
+                            </video>
+                        </center>
+                    </p:column>
+                </p:dataTable>
+                </h:form>    
+                
+                <h:form rendered="#{festivalPageController.canLeave()}">
+                    <p:panelGrid columns="2" style="width: 100%" >
+                        <p:inputTextarea value="#{festivalPageController.comment.text}" placeholder="Komentar" required="true" 
+                                         requiredMessage="Neophodan je komentar" id="idCommentUser">
+                            
+                    </p:inputTextarea >
+                    <p:message for="idCommentUser"/>
+                        <p:rating value="#{festivalPageController.rating.rating}" stars="10"
+                                  required="true" requiredMessage="Neophodna je ocena"
+                                  cancel="false" id="idRating">
+                            
+                        </p:rating>
+                    <p:message for="idRating"/>
+                    
+                    
+                   
+                    
+                    <p:panelGrid columns="1">
+                        <h:outputText value="Izaberite slike koje hocete da dodate"/>
+                    <p:fileUpload fileUploadListener="#{festivalPageController.handlePictureUpload}" mode="advanced" dragDropSupport="true"
+                                  multiple="true" sizeLimit="10000000" fileLimit="3" allowTypes="/(\.|\/)(gif|jpe?g|png)$/" update="pictureTable" />
+                    </p:panelGrid>
+                
+                    <p:panelGrid columns="1">
+                        <h:outputText value="Izaberite videe koje hocete da dodate"/>
+                        <p:fileUpload fileUploadListener="#{festivalPageController.handleVideoUpload}" mode="advanced" dragDropSupport="true"
+                                      multiple="true" sizeLimit="100000000" fileLimit="3" allowTypes="/(\.|\/)(mp4)$/" update="videoTable"/>
+                    </p:panelGrid>
+                
+                    <p:dataTable var="picture" id="pictureTable" value="#{festivalPageController.listPictures}">
+                                <p:column headerText="Ime">
+                                    <center>
+                                    <h:outputText value="#{picture.name}"/>
+                                    </center>
+                                </p:column>
+                    </p:dataTable>
+
+                    <p:dataTable var="video" id = "videoTable" value="#{festivalPageController.listVideos}"
+                                 emptyMessage="Nema video snimaka">
+                                <p:column headerText="Ime" >
+                                    <center>
+                                    <h:outputText value="#{video.name}"/>
+                                    </center>
+                                </p:column>
+                    </p:dataTable>
+                
+                     <p:commandButton value="Dodaj iskustvo" validateClient="true"
+                                      action="#{festivalPageController.AddUserExp()}"
+                                          ajax="false"/>
+                    </p:panelGrid>
+                    
+                </h:form>
+                <p:dataTable var="experience" value="#{festivalPageController.listUserExp()}"
+                             emptyMessage="Nema komentara">
+                    <p:column headerText="Komentari">
+                        <center>
+                        <h:outputText value="#{experience.comment.text}"/>
+                        </center>
+                    </p:column>
+                    <p:column headerText="Rejting">
+                        <center>
+                            <p:rating value="#{experience.rating.rating}" readonly="true" stars="10"/>
+                        </center>
+                    </p:column>
+                    <p:column headerText="Korisnik">
+                        <center>
+                        <h:outputText value="#{experience.comment.reservation.user.userName}"/>
+                        </center>
+                    </p:column>
+                </p:dataTable>
+                
+                <p:panelGrid columns="2">
+                    <h:outputText value="Prosecna ocena"/>
+                    <p:rating value="#{festivalPageController.avgRating()}" stars="10" readonly="true"/>
+                </p:panelGrid>
+                
+                
+                
+                    <p:dataTable var="link" 
+                                 id = "linkTableThird" value="#{festivalPageController.event.links}">
+                        <p:column>
+
+                            <a href="#{link.link}" > #{link.name}</a>
+
+                        </p:column>
+                    </p:dataTable> 
+                            
+                    
+                    
+                    
+                
+            </ui:define>
+            
+            
+        </ui:composition>
+        
+    </h:body>
+</html>
+

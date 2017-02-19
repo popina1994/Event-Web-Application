@@ -1,0 +1,207 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:p="http://primefaces.org/ui">
+       
+    <ui:composition template="/template/masterLayout.xhtml">
+        <ui:define name="head">
+            <script src="https://apis.google.com/js/platform.js" async='async' defer='defer'
+            type="text/javascript"></script>
+            <meta name="google-signin-client_id" 
+                  content="429398665540-gep8qhvgedne02tqho3h1vsfjq6lli3c.apps.googleusercontent.com"/>
+            
+            <script type="text/javascript">  
+                function onSignIn(googleUser) {
+                    var profile = googleUser.getBasicProfile();
+                    loginCommnad([{name: 'signInName', value: profile.getId()}]);
+                    console.log("Zavrsilo");
+                 }
+                 
+                function onRegister(googleUser) {
+                  var profile = googleUser.getBasicProfile();
+                  console.log('Register ID: ' + profile.getId()); // Do not send to your backend! Use an ID token instead.
+                  $('#hiddenLinkRegister').click();
+                  registerCommand([{name: 'name1', value: profile.getId()}]);
+                  console.log("TO");
+
+                }
+                 
+                function signOut() {
+                 var auth2 = gapi.auth2.getAuthInstance();
+                 auth2.signOut().then(function () {
+                   console.log('User signed out.');
+                 });
+                }
+ 
+            </script>
+            <title> Pocetna </title>
+        </ui:define>
+        
+        <ui:define name="content">
+            <!-- Logovanje -->
+            
+            
+            <h:outputText style="color: red" value="#{homePageController.errorMessage}" 
+                           rendered="#{not empty homePageController.errorMessage}"/>
+            <h:form rendered="#{homePageController.showLogin}" id="loginForm">
+                
+                <h:panelGrid columns="2" cellpadding="5">
+                    <p:inputText id ="userNameLogin" value="#{homePageController.userName}"
+                                 placeholder="Korisnicko ime" required="true"
+                                 requiredMessage="Neophodno korisniko ime"/>
+                    <p:message for="userNameLogin"/>
+
+                    <p:password value="#{homePageController.password}" placeholder="Sifra" 
+                                required="true" requiredMessage="Neophodna sifra"
+                                id="passwordLogin" redisplay="true"/>
+                    <p:message for="passwordLogin"/>
+            </h:panelGrid>
+            <h:panelGrid columns="2" cellpadding="5">
+
+                <p:commandButton validateClient="true" styleClass="ui-priority-primary" 
+                                 value="Uloguj se" action="#{homePageController.login()}" 
+                                 ajax="false"/>
+            </h:panelGrid>
+            </h:form>
+            
+            
+            <h:form rendered="#{homePageController.showLogin}">
+                <div class="g-signin2" data-onsuccess="onSignIn"/>
+                <a href="#" onclick="signOut();">Sign out</a>
+                <p:remoteCommand name="loginCommnad" actionListener="#{homePageController.loginGoogle()}"
+                                 update=":loginForm:passwordLogin :loginForm:userNameLogin"/>
+            </h:form>
+            
+            
+            <!-- Promena sifre-->
+            <h:form rendered="#{homePageController.showChangePassword}">
+            <h:panelGrid columns="2" cellpadding="5">
+                
+                
+                <p:inputText id ="userNameChange" value="#{homePageController.userName}"
+                             placeholder="Korisnicko ime" required="true"
+                             requiredMessage="Neophodno korisniko ime"/>
+                <p:message for="userNameChange"/>
+                
+                <p:password value="#{homePageController.password}" placeholder="Sifra" 
+                            required="true" requiredMessage="Neophodna stara sifra"
+                            id="passwordChange"/>
+                <p:message for="passwordChange"/>
+                
+                <p:password value="#{homePageController.passwordNew}" placeholder="Nova sifra" 
+                        required="true" requiredMessage="Neophodna nova sifra"
+                id="passwordChangeNew"
+                validatorMessage="Neisparavan obrazac sifre, od 6-12 karaktera,
+                                mora bar jedno veliko slovo, bar 3 mala i numerika 
+                                i specijalnih bar jedan">
+                    <f:validateRegex pattern=
+                   "^(?=.*[A-Z])(?=.*[0-9!@#$&amp;a])(?=.*[a-z].*[a-z].*[a-z])(?=[a-zA-Z])(?=.{6,12}$)((.)\2?(?!\2))+$"
+                   />
+                </p:password>
+                <p:message for="passwordChangeNew"/>
+                
+                <p:password value="#{homePageController.passwordNewConfirm}" placeholder="Nova sifra potvrda" 
+                        required="true" requiredMessage="Neophodna potvrda nove sifre"
+                id="passwordChangeNewConfirm"/>
+                <p:message for="passwordChangeNewConfirm"/>
+                
+            </h:panelGrid>
+            <h:panelGrid columns="2" cellpadding="5">
+
+                <p:commandButton validateClient="true" styleClass="ui-priority-primary" 
+                                 value="Promeni sifru" action="#{homePageController.changePassword()}" 
+                                 ajax="false"/>
+            </h:panelGrid>
+            </h:form>
+      
+            
+            <!-- Registrovanje -->
+            
+            <h:form rendered="#{homePageController.showRegister}">
+                <div class="g-signin2" data-onsuccess="onRegister"/>
+                
+                <p:remoteCommand name="registerCommand" actionListener="#{homePageController.setGoogleId()}"
+                update=":formRegister:userNameRegister"/>
+            </h:form>
+            
+            <h:form id="formRegister" rendered="#{homePageController.showRegister}">
+                
+                                                      
+                                                       
+                
+                <h:panelGrid columns="2" cellpadding="5">
+                    <p:inputText id="userNameRegister" value="#{homePageController.userName}" 
+                                 placeholder="Korisnicko ime" required="true"
+                                 requiredMessage="Neophodno korisnicko ime"/>
+                    <p:message for="userNameRegister"/>
+                    <p:password value="#{homePageController.password}"
+                                placeholder="Sifra " required="true"
+                                requiredMessage="Neophodna sifra"
+                                id="passwordRegister"
+                                validatorMessage="Neisparavan obrazac sifre, od 6-12 karaktera,
+                                mora bar jedno veliko slovo, bar 3 mala i numerika 
+                                i specijalnih bar jedan"> 
+                                <f:validateRegex pattern=
+                   "^(?=.*[A-Z])(?=.*[0-9!@#$&amp;a])(?=.*[a-z].*[a-z].*[a-z])(?=[a-zA-Z])(?=.{6,12}$)((.)\2?(?!\2))+$"
+                   />
+                    </p:password>
+                    <p:message for="passwordRegister"/>
+                    <p:password value="#{homePageController.passwordConfirm}"
+                                placeholder="Ponovno unesite sifru" required="true"
+                                requiredMessage="Neophodna potvrda sifre"
+                                id="passwordRegisterConfirm"/>
+                    <p:message for="passwordRegisterConfirm"/>
+                    <p:inputText value="#{homePageController.firstName}"
+                                 placeholder="Ime" required="true"
+                                 requiredMessage="Neophodno ime"    
+                                 id="firstNameRegister"/>
+                    <p:message for="firstNameRegister"/>
+                    <p:inputText value="#{homePageController.lastName}"
+                                 placeholder="Prezime" required="true"
+                                 requiredMessage="Neophodno prezime"
+                                 id="lastNameRegister"/>
+                    <p:message for="lastNameRegister"/>
+                        
+                    <p:inputText value="#{homePageController.phone}" 
+                                 placeholder="Broj telefona" required="true" 
+                                 requiredMessage="Neophodan broj telefona"
+                                 validatorMessage="Molimo vas unesite kako treba broj telfona (samo brojevi)"
+                                 id="phoneRegister">
+                        <f:validateRegex pattern="^[0-9]+$" />
+                        
+                    </p:inputText>
+                    <p:message for="phoneRegister"/>
+                    <p:inputText value="#{homePageController.email}" 
+                                 placeholder="email" required="true"
+                                 id="emailRegister"
+                                 requiredMessage="Neophodna email adresa"/>
+                    <p:message for="emailRegister"/>
+                    
+                </h:panelGrid>
+                <p:commandButton styleClass="ui-priority-primary" value="Registruj se"
+                                 action="#{homePageController.register()}" ajax="false"
+                                 validateClient="true"/>
+            </h:form>
+            
+
+            <h:form>
+                <p:commandLink rendered="#{not homePageController.showChangePassword}"
+                               value="Promeni sifru" action="#{homePageController.enableChangePassword()}" ajax="false"/> 
+                <ui:fragment rendered="#{not homePageController.showChangePassword}"><br /></ui:fragment>
+               <p:commandLink rendered="#{not homePageController.showRegister}"
+                              value="Novi korisnik" action="#{homePageController.enableRegister()}" ajax="false"/> 
+               <ui:fragment rendered="#{not homePageController.showRegister}"><br /></ui:fragment>
+               <p:commandLink rendered="#{not homePageController.showLogin}"
+                              value="Prijavi se" action="#{homePageController.enableLogin()}" ajax="false"/> 
+               <ui:fragment rendered="#{not homePageController.showLogin}"><br /></ui:fragment>
+            </h:form>
+            
+            
+        </ui:define>
+
+    </ui:composition>
+</html>
+

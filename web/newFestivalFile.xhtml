@@ -1,0 +1,189 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:pe="http://primefaces.org/ui/extensions">
+    <h:body>
+       
+        <ui:composition template="/template/masterLayout.xhtml">
+                <ui:define name="head">
+                    <title> Novi festival</title>
+                </ui:define>
+            <ui:define name="content">
+                
+            <h:form><!-- sredi ovo djubre-->
+                <p:steps activeIndex="#{newFestivalFileController.activeIndex}" styleClass="custom" readonly="false" >
+                    <p:menuitem value="Informacije o festivalu" ajax="false"  action="#{newFestivalFileController.activateStep(0)}"/>
+                    <p:menuitem value="Unos slika i videaa" ajax="false" action="#{newFestivalFileController.activateStep(1)}"/>
+                    <p:menuitem value="Provera" />
+                </p:steps>  
+            </h:form>
+                
+                <h:outputText style="color: red" value="#{newFestivalFileController.errorMessage}" 
+                              rendered="#{not empty newFestivalFileController.errorMessage}"/>
+                <ui:fragment rendered="#{newFestivalFileController.activeIndex eq 0}"
+                         id="fragmentAddFirst">
+                    <h:form enctype="multipart/form-data">
+                        <p:panelGrid columns="1">
+                            <h:outputText value="Izaberite fajl koji zelite da dodate"/>
+                        <p:fileUpload fileUploadListener="#{newFestivalFileController.handleEventData}" mode="advanced" dragDropSupport="true"
+                                      multiple="true" sizeLimit="10000000" fileLimit="1" allowTypes="/(\.|\/)(csv|json)$/" 
+                                       id="fileJSONorCSV" />
+                        </p:panelGrid>
+                        <p:commandButton styleClass="ui-priority-primary" validateClient="true"
+                                         value="Sledeci korak" action="#{newFestivalFileController.activateStep(1)}" 
+                                         ajax="false"/>
+                    </h:form>
+            </ui:fragment>
+            <ui:fragment rendered="#{newFestivalFileController.activeIndex eq 1}"
+                         id="fragmentAddSecond">
+                <h:form enctype="multipart/form-data">
+                    <center>
+                    <p:panelGrid columns="1">
+                        <h:outputText value="Izaberite slike koje hocete da dodate"/>
+                    <p:fileUpload fileUploadListener="#{newFestivalFileController.handlePictureUpload}" mode="advanced" dragDropSupport="true"
+                                  multiple="true" sizeLimit="10000000" fileLimit="3" allowTypes="/(\.|\/)(gif|jpe?g|png)$/" update="pictureTable" />
+                    </p:panelGrid>
+                    </center>
+                </h:form>
+                
+                <h:form enctype="multipart/form-data">
+                    <center>
+                    <p:panelGrid columns="1">
+                        <h:outputText value="Izaberite videe koje hocete da dodate"/>
+                        
+                        <p:fileUpload fileUploadListener="#{newFestivalFileController.handleVideoUpload}" mode="advanced"
+                                       dragDropSupport="true"
+                                      multiple="true" sizeLimit="100000000" fileLimit="3" allowTypes="/(\.|\/)(mp4)$/" update="videoTable"/>
+                        
+                    </p:panelGrid>
+                    </center>
+                </h:form>
+                
+                <p:dataTable var="picture" id="pictureTable" value="#{newFestivalFileController.listPictures}">
+                            <p:column headerText="Ime">
+                                <center>
+                                <h:outputText value="#{picture.name}"/>
+                                </center>
+                            </p:column>
+                </p:dataTable>
+                
+                <p:dataTable var="video" id = "videoTable" value="#{newFestivalFileController.listVideos}">
+                            <p:column headerText="Ime" >
+                                <center>
+                                <h:outputText value="#{video.name}"/>
+                                </center>
+                            </p:column>
+                </p:dataTable>
+                
+                
+                <h:form>
+                    <p:commandButton styleClass="ui-priority-primary" 
+                                     value="Sledeci korak" action="#{newFestivalFileController.activateStep(2)}" 
+                                     ajax="false"/>
+                </h:form>
+            </ui:fragment>
+                
+            <ui:fragment rendered="#{newFestivalFileController.activeIndex eq 2}"
+                         id="fragmentAddThird">
+                <h:form>
+                    <h:panelGrid columns="2">
+                        <h:outputText value="Ime festivala"/>
+                        <h:outputText value="#{newFestivalFileController.event.name}"/>
+                        
+                        <h:outputText value="Mesto odrzavanja "/>
+                        <h:outputText value="#{newFestivalFileController.event.place}"/>
+                        
+                        <h:outputText value="Datum pocetka"/>
+                        <h:outputText value="#{newFestivalFileController.event.beginDateTime}">
+                            <f:convertDateTime pattern="dd.MM.yyyy." timeZone="CET"/>
+                        </h:outputText>
+                        
+                        <h:outputText value="Datum kraja"/>
+                        <h:outputText value="#{newFestivalFileController.event.endDateTime}">
+                            <f:convertDateTime pattern="dd.MM.yyyy." timeZone="CET"/>
+                        </h:outputText>
+                        <h:outputText value="Cena karata individualno"/>
+                        <h:outputText value="#{newFestivalFileController.ticketPriceInd}"/>
+                                      
+                        <h:outputText value="Cena karata ukupno"/>
+                        <h:outputText value="#{newFestivalFileController.ticketPriceFull}"/>
+                    </h:panelGrid>
+                </h:form>
+                
+                <p:dataTable var="link" 
+                             id = "linkTableThird" value="#{newFestivalFileController.listLink}">
+                    <p:column headerText="Name">
+                        <h:outputText value="#{link.name}"/>
+                    </p:column>
+                    <p:column headerText="Link">
+                        <h:outputText value="#{link.link}"/>
+                    </p:column>
+                </p:dataTable>
+                
+                <p:dataTable var="hours"  id = "hoursTableThird" value="#{newFestivalFileController.listHours}">
+                    <p:column headerText="Ime izvodjaca">
+                        <h:outputText value="#{hours.performer}"/>
+                    </p:column>
+                    <p:column headerText="Pocetno vreme">
+                        <h:outputText value="#{hours.startTime}">
+                            <f:convertDateTime pattern="dd.MM.yyyy. HH:mm" timeZone="CET"/>
+                        </h:outputText>
+                    </p:column>
+                    <p:column headerText="Krajnje vreme">
+                        <h:outputText value="#{hours.endTime}">
+                            <f:convertDateTime pattern="dd.MM.yyyy. HH:mm" timeZone="CET"/>
+                        </h:outputText>
+                    </p:column>
+                </p:dataTable>
+                
+                <p:dataTable var="picture" id="pictureTableThird" value="#{newFestivalFileController.listPictures}">
+                    <p:column headerText="Ime">
+                        <center>
+                        <h:outputText value="#{picture.name}"/>
+                        </center>
+                    </p:column>
+                    <p:column headerText="Slika">
+                        <center>
+                        <h:graphicImage url="#{picture.path}" width="200" height="150"/>
+                        </center>
+                    </p:column>
+                </p:dataTable>
+                
+                <p:dataTable var="video" id = "videoTableThird" value="#{newFestivalFileController.listVideos}">
+                    <p:column headerText="Ime" >
+                        <center>
+                        <h:outputText value="#{video.name}"/>
+                        </center>
+                    </p:column>
+                    <p:column headerText="Video">
+                        <center>
+                            <video id="myVideo" width="400" controls="controls">
+                                <source src="#{video.path}" type="video/mp4" />
+                            </video>
+                        </center>
+                    </p:column>
+                </p:dataTable>
+                  <h:form>
+                    <p:commandButton styleClass="ui-priority-primary" 
+                                     value="Napravi festival" action="#{newFestivalFileController.addNewFestival()}" 
+                                     ajax="false"/>
+                </h:form>
+                
+                <h:form>
+                    <p:commandButton styleClass="ui-priority-primary" 
+                                        value="Nemoj da pravis festival" action="#{newFestivalFileController.cancelAdd()}" 
+                                     ajax="false"/>
+                </h:form>
+                    
+                
+            </ui:fragment>
+            </ui:define>
+        </ui:composition>
+        
+    </h:body>
+</html>
+

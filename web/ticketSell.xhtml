@@ -1,0 +1,55 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:pe="http://primefaces.org/ui/extensions">
+    <h:body>
+       
+        <ui:composition template="/template/masterLayout.xhtml">
+                <ui:define name="head">
+                    <title> Prodaja ulaznica </title>
+                </ui:define>
+            <ui:define name="content">
+                <p:dataTable var="reservation" value="#{ticketSellController.listReservation}" widgetVar="reservationTable"
+                                 emptyMessage="Nema rezervacija sa zadatim kriterijumom pretrage"
+                                 id="ReservationTableId">
+                    <p:column headerText="Ime festivala">
+                        <h:outputText value="#{reservation.event.name}"/>
+                    </p:column>
+                    <p:column headerText="Ime korisnika">
+                        <h:outputText value="#{reservation.user.userName}"
+                                      />
+                    </p:column>
+                    <p:column headerText="Tip rezervacije">
+                        <h:outputText value="#{reservation.reservationType eq 0 ? 'Jedan dan' : 'Ceo'}"/>
+                    </p:column>
+                    <p:column headerText="Datum rezervacije(ako je dan)" >
+                        <h:outputText value="#{reservation.eventTime}" rendered="#{reservation.reservationType eq 0 ? true : false}">
+                            <f:convertDateTime pattern="dd.MM.yyyy." timeZone="CET"/>
+                        </h:outputText>
+                    </p:column>
+                    
+                    <p:column headerText="Broj ulaznica">
+                        <h:outputText value="#{reservation.ticketNum}"/>
+                    </p:column>
+                    <p:column headerText="Prodaj ulaznice">
+                        <center>
+                        <p:commandButton action="#{ticketSellController.sell(reservation)}"
+                            update="ReservationTableId"
+                                     value="Prodaj karte"/>
+                        </center>
+
+                    </p:column>
+                    
+                                     
+                </p:dataTable>
+                
+            </ui:define>
+        </ui:composition>
+        
+    </h:body>
+</html>
+

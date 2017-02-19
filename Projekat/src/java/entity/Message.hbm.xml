@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated Feb 14, 2017 6:22:12 PM by Hibernate Tools 4.3.1 -->
+<hibernate-mapping>
+    <class name="entity.Message" table="message" catalog="projekat" optimistic-lock="version">
+        <id name="idmessage" type="java.lang.Integer">
+            <column name="IDMessage" />
+            <generator class="identity" />
+        </id>
+        <many-to-one name="reservation" class="entity.Reservation" fetch="select" lazy="false">
+            <column name="IDReservation" not-null="true" />
+        </many-to-one>
+        <property name="messageType" type="int">
+            <column name="MessageType" not-null="true">
+                <comment>Tip poruke - otkazan festival, promenjena satnica/izvodjac</comment>
+            </column>
+        </property>
+        <property name="shown" type="boolean">
+            <column name="Shown" not-null="true">
+                <comment>Da li je korisnik video poruku</comment>
+            </column>
+        </property>
+    </class>
+</hibernate-mapping>

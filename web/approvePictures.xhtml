@@ -1,0 +1,47 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:pe="http://primefaces.org/ui/extensions">
+    <h:body>
+       
+        <ui:composition template="/template/masterLayout.xhtml">
+                <ui:define name="head">
+                    <title> Dozvole slika</title>
+                </ui:define>
+            <ui:define name="content">
+                      <h:form>
+                          <p:dataTable var="picture" value="#{pictureApprovalController.listPictures}"
+                                       id="pictureTableId" emptyMessage="Nema slika">
+                        <p:column headerText="Ime">
+                            <center>
+                            <h:outputText value="#{picture.name}"/>
+                            </center>
+                        </p:column>
+                        <p:column headerText="Slika">
+                            <center>
+                            <h:graphicImage url="#{picture.path}" width="200" height="150"/>
+                            </center>
+                        </p:column>
+                        <p:column headerText="Dodaj sliku">
+                            <p:commandButton
+                                value="Dodaj sliku"
+                                action="#{pictureApprovalController.addPicture(picture, true)}"
+                                update="pictureTableId"/>
+                            <br></br>
+                            <p:commandButton
+                                value="Zabrani sliku"
+                                action="#{pictureApprovalController.addPicture(picture, false)}"
+                                update="pictureTableId"/>
+                        </p:column>
+                </p:dataTable>
+                </h:form>
+            </ui:define>
+        </ui:composition>
+        
+    </h:body>
+</html>
+

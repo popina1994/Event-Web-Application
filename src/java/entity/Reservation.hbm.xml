@@ -1,0 +1,51 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated Feb 14, 2017 6:22:12 PM by Hibernate Tools 4.3.1 -->
+<hibernate-mapping>
+    <class name="entity.Reservation" table="reservation" catalog="projekat" optimistic-lock="version">
+        <id name="idreservation" type="java.lang.Integer">
+            <column name="IDReservation" />
+            <generator class="identity" />
+        </id>
+        <many-to-one name="event" class="entity.Event" lazy="false" fetch="select">
+            <column name="IDEvent" not-null="true" />
+        </many-to-one>
+        <many-to-one name="user" class="entity.User" fetch="select" lazy="false">
+            <column name="IDUser" not-null="true" />
+        </many-to-one>
+        <property name="eventTime" type="date">
+            <column name="EventTime" length="10" not-null="true">
+                <comment>Datum dogadjaja od rezervacije (neophodno zbog rezervacija za dane)</comment>
+            </column>
+        </property>
+        <property name="reservationTime" type="timestamp">
+            <column name="ReservationTime" length="19" not-null="true">
+                <comment>Vreme kad je rezervacija izvrsena</comment>
+            </column>
+        </property>
+        <property name="status" type="int">
+            <column name="Status" not-null="true">
+                <comment>Enum koji oznacava da li je rezervisana, da li je potvrdljena, da li je otakzana...</comment>
+            </column>
+        </property>
+        <property name="reservationType" type="int">
+            <column name="ReservationType" not-null="true">
+                <comment>Enum koji oznacava da li je za ceo dan ili za ceo festival</comment>
+            </column>
+        </property>
+        <property name="ticketNum" type="int">
+            <column name="TicketNum" not-null="true">
+                <comment>Broj karata koje korisnik rezervise</comment>
+            </column>
+        </property>
+        <one-to-one name="comment" class="entity.Comment"></one-to-one>
+        <one-to-one name="rating" class="entity.Rating"></one-to-one>
+        <set name="messages" table="message" inverse="true" lazy="false" fetch="select">
+            <key>
+                <column name="IDReservation" not-null="true" />
+            </key>
+            <one-to-many class="entity.Message" />
+        </set>
+    </class>
+</hibernate-mapping>

@@ -1,0 +1,44 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:pe="http://primefaces.org/ui/extensions">
+    <h:body>
+       
+        <ui:composition template="/template/masterLayout.xhtml">
+                <ui:define name="head">
+                    <title> Administrator pocetna</title>
+                    
+                     <script src="https://apis.google.com/js/platform.js" async='async' defer='defer'
+            type="text/javascript"></script>
+            <meta name="google-signin-client_id" 
+                  content="429398665540-gep8qhvgedne02tqho3h1vsfjq6lli3c.apps.googleusercontent.com"/>
+                    
+                     <script type="text/javascript">  
+             function onSignIn(googleUser) {
+                    var profile = googleUser.getBasicProfile();
+                    //loginCommnad([{name: 'signInName', value: profile.getId()}]);
+                    console.log("Zavrsilo");
+                 }
+                 
+
+                 
+            </script>
+            
+                </ui:define>
+            <ui:define name="content">
+                
+                     
+                     <a href="#" onclick="signOut();">Sign out</a>
+                <h:form>
+                     <p:remoteCommand name="loginCommnad" action="#{homePageController.loginGoogle()}"/>
+                </h:form>
+            </ui:define>
+        </ui:composition>
+        
+    </h:body>
+</html>
+

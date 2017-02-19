@@ -1,0 +1,68 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:pe="http://primefaces.org/ui/extensions">
+    <h:body>
+       
+        <ui:composition template="/template/masterLayout.xhtml">
+                <ui:define name="head">
+                    <title> Festivali </title>
+                </ui:define>
+            <ui:define name="content">
+                 <h:form>
+                     <p:dataTable var="event" value="#{startPageController.listEvent}" widgetVar="eventTable"
+                                 emptyMessage="Nema festivala sa zadatim kriterijumom pretrage"
+                                 paginator="true" >
+                        <p:column filterBy="#{event.name}" headerText="Ime" 
+                                  filterMatchMode="contains" >
+                            <h:outputText value="#{event.name}"/>
+                        </p:column>
+                        <p:column filterBy="#{event.beginDateTime}" headerText="Pocetak festivala"
+                                  filterMatchMode="gte">
+                            <f:facet name="filter">
+                                  <p:calendar  pattern="dd/MM/yyyy">
+                                    <p:ajax event="dateSelect"  oncomplete="PF('eventTable').filter()"/>
+                                </p:calendar>
+                           </f:facet>
+                            <h:outputText value="#{event.beginDateTime}"> 
+                                <f:convertDateTime pattern="dd.MM.yyyy." timeZone="CET"/>
+                            </h:outputText>
+                        </p:column>
+                        
+                        <p:column filterBy="#{event.endDateTime}" headerText="Kraj festivala"
+                                  filterMatchMode="lte">
+                            <f:facet name="filter">
+                                  <p:calendar  pattern="dd/MM/yyyy">
+                                    <p:ajax event="dateSelect"  oncomplete="PF('eventTable').filter()"/>
+                                </p:calendar>
+                           </f:facet>
+                            <h:outputText value="#{event.endDateTime}"> 
+                                <f:convertDateTime pattern="dd.MM.yyyy." timeZone="CET"/>
+                            </h:outputText>
+                        </p:column>
+                        
+                        <p:column filterBy="#{event.place}" headerText="Mesto odrzavanja" 
+                                  filterMatchMode="contains" >
+                            <h:outputText value="#{event.place}"/>
+                        </p:column>
+                        <p:column filterBy="#{event}" headerText="Izvodjaci" 
+                                  filterFunction="#{startPageController.filterByPerformer}">
+                            
+                        </p:column>
+                         <p:column headerText="Vise o dogadjaju" rendered="#{homePageController.isRegisteredUser()}"
+                                   >
+                             <p:commandButton value="Detaljnije" action="#{festivalPageController.viewFestival(event, homePageController.curUser)}"/>
+                         </p:column>
+                    
+                    </p:dataTable>
+                </h:form>
+            </ui:define>
+        </ui:composition>
+        
+    </h:body>
+</html>
+

@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated Feb 14, 2017 6:22:12 PM by Hibernate Tools 4.3.1 -->
+<hibernate-mapping>
+    <class name="entity.Comment" table="comment" catalog="projekat" optimistic-lock="version">
+        <id name="idreservation" type="java.lang.Integer">
+            <column name="IDReservation" />
+            <generator class="foreign">
+                <param name="property">reservation</param>
+            </generator>
+        </id>
+        <one-to-one name="reservation" class="entity.Reservation" constrained="true" lazy="false"></one-to-one>
+        <property name="text" type="string">
+            <column name="Text" length="65535" not-null="true">
+                <comment>Korisnikov komentar</comment>
+            </column>
+        </property>
+    </class>
+</hibernate-mapping>

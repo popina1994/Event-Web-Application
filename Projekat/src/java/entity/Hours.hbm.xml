@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated Feb 14, 2017 6:22:12 PM by Hibernate Tools 4.3.1 -->
+<hibernate-mapping>
+    <class name="entity.Hours" table="hours" catalog="projekat" optimistic-lock="version">
+        <id name="idhours" type="java.lang.Integer">
+            <column name="IDhours" />
+            <generator class="identity" />
+        </id>
+        <many-to-one name="event" class="entity.Event" fetch="select">
+            <column name="IDEvent" not-null="true" />
+        </many-to-one>
+        <property name="performer" type="string">
+            <column name="Performer" length="50" not-null="true">
+                <comment>Izvodjac</comment>
+            </column>
+        </property>
+        <property name="startTime" type="timestamp">
+            <column name="StartTime" length="19" not-null="true">
+                <comment>Pocetak koncerta</comment>
+            </column>
+        </property>
+        <property name="endTime" type="timestamp">
+            <column name="EndTime" length="19" not-null="true">
+                <comment>Kraj koncerta</comment>
+            </column>
+        </property>
+        <property name="cancelled" type="boolean">
+            <column name="Cancelled" not-null="true">
+                <comment>Da li je otkazan nastup</comment>
+            </column>
+        </property>
+    </class>
+</hibernate-mapping>

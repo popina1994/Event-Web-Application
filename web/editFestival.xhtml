@@ -1,0 +1,201 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:pe="http://primefaces.org/ui/extensions">
+    <h:body>
+       
+        <ui:composition template="/template/masterLayout.xhtml">
+                <ui:define name="head">
+                    <title> Uredjivanje festivala</title>
+                </ui:define>
+            <ui:define name="content">
+                 <h:form><!-- sredi ovo djubre-->
+            <p:steps activeIndex="#{editFestivalController.activeIndex}" styleClass="custom" readonly="false" >
+                <p:menuitem value="Informacije o festivalu" ajax="false" action="#{editFestivalController.activateStep(0)}"/>
+                <p:menuitem value="Unos satnica" ajax="false" action="#{editFestivalController.activateStep(1)}"/>
+                <p:menuitem value="Unos fajlova" />
+            </p:steps>  
+            </h:form>
+            
+            <ui:fragment id="fragmentAddFirst" rendered="#{editFestivalController.activeIndex eq 0}">
+                <h:form id="formAddEvent" >
+                    <h:panelGrid columns="2" cellpadding="5" >
+                        <p:inputText id="eventName" value="#{editFestivalController.event.name}"
+                                     placeholder="Ime festivala"
+                                     required="true" requiredMessage="Neophodno je ime festivala"/>
+
+                        <p:message for="eventName"/>
+                        <p:inputText id="eventPlace" value="#{editFestivalController.event.place}"
+                            placeholder="Lokacija festivala"
+                            required="true" requiredMessage="Neophodna je lokacija festivala"/>
+                        <p:message for="eventPlace"/>
+                        <p:calendar id="eventStartDate" value="#{editFestivalController.event.beginDateTime}"
+                                     placeholder="Datum pocetka festivala"
+                                     required="true" requiredMessage="Neophodan je datum pocetka festivala"/>
+                        <p:message for="eventStartDate"/>
+                        <p:calendar id="eventEndDate" value="#{editFestivalController.event.endDateTime}"
+                                     placeholder="Datum zavrsetka festivala"
+                                     required="true" requiredMessage="Neophodan je datum zavrsetka festivala"/>
+                        <p:message for="eventEndDate"/>
+                        <p:inputNumber id="eventCntTicketPerDay" value="#{editFestivalController.event.ticketPerDay}"
+                            placeholder="Broj dostupnih karata po danu"
+                            required="true" requiredMessage="Neophodan je broj dostupnih karata po danu"/>
+                        <p:message for="eventCntTicketPerDay"/>
+                        <p:inputNumber id="eventCntTicketPerUser" value="#{editFestivalController.event.ticketPerUser}"
+                            placeholder="Broj dostupnih karata po korisniku"
+                            required="true" requiredMessage="Neophodan je broj dostupnih karata po korisniku"/>
+                        <p:message for="eventCntTicketPerUser"/>
+                        
+                        <p:inputNumber id="eventTicketPriceFull" value="#{editFestivalController.event.ticketPriceFull}"
+                            placeholder="Cena za sve dane festivala"
+                            required="true" requiredMessage="Neophodna je cena za sve dane festivala"/>
+                        <p:message for="eventTicketPriceFull"/>
+                        <p:inputNumber id="eventTicketPriceInd" value="#{editFestivalController.event.ticketPriceInd}"
+                            placeholder="Cena za jedan dan festivala"
+                            required="true" requiredMessage="Neophodna je cena za jedan dan festivala"/>
+                        <p:message for="eventTicketPriceInd"/>
+                        <p:inputTextarea id="eventInfo" value="#{editFestivalController.event.info}"
+                            placeholder="Dodatne informacije"/>
+                        <p:message for="eventInfo"/>
+                    </h:panelGrid>
+
+                    <p:commandButton validateClient="true" styleClass="ui-priority-primary" 
+                                     value="Sledeci korak" action="#{editFestivalController.activateStep(1)}" 
+                                     ajax="false"/>
+                </h:form>
+
+                <h:form>
+                    <h:panelGrid columns="2">
+                         <p:inputText id="eventLinkName" value="#{editFestivalController.link.name}"
+                                     placeholder="Tip linka"
+                                     required="true" requiredMessage="Neophodan je tip linka"/>
+                        <p:message for="eventLinkName" id="messageEventLinkName"/>
+
+                        <p:inputText id="eventLinkLink" value="#{editFestivalController.link.link}"
+                                     placeholder="Link"
+                                     required="true" requiredMessage="Neophodan je link"/>
+                        <p:message for="eventLinkLink" id="messageEventLinkLink"/>
+                    </h:panelGrid>
+                    <p:commandButton styleClass="ui-priority-primary" validateClient="true"
+                                     value="Dodaj link" 
+                                     update=":linkTable messageEventLinkName messageEventLinkLink"
+                                     actionListener="#{editFestivalController.addLink()}"
+                                     ajax="true"/>
+
+                </h:form>
+                <p:dataTable var="link" rendered="#{editFestivalController.activeIndex eq 0}" 
+                             id = "linkTable" value="#{editFestivalController.event.links}">
+                            <p:column headerText="Name">
+                                <h:outputText value="#{link.name}"/>
+                            </p:column>
+                            <p:column headerText="Link">
+                                <h:outputText value="#{link.link}"/>
+                            </p:column>
+                </p:dataTable>
+            </ui:fragment>
+            <ui:fragment rendered="#{editFestivalController.activeIndex eq 1}"
+                         id="fragmentAddSecond">
+                <h:form>
+                    <h:panelGrid columns="2">
+                        <p:inputText id="eventHoursPerformer" value="#{editFestivalController.hours.performer}"
+                                     placeholder="Ime izvodajaca"
+                                     required="true" requiredMessage="Neophodan je izvodjac"/>
+                        <p:message for="eventHoursPerformer" id="messageeventHoursPerformer"/>
+
+                        <p:calendar value="#{editFestivalController.hours.startTime}" mode="popup" widgetVar="popupTimeWidget"  
+                                    label="Popup time picker" id ="eventHoursStartTime" pattern="MM/dd/yyyy HH:mm:ss"
+                                       required="true" requiredMessage="Neophodan je pocetak nastupa"/> 
+                        <p:message for="eventHoursStartTime" id="messageeventHoursStartTime"/>
+                        <p:calendar value="#{editFestivalController.hours.endTime}" mode="popup" widgetVar="popupTimeWidget"  
+                                    label="Popup time picker" id ="eventHoursEndTime" pattern="MM/dd/yyyy HH:mm:ss" 
+                                       required="true" requiredMessage="Neophodan je kraj nastupa"/> 
+                        <p:message for="eventHoursEndTime" id="messageeventHoursEndTime"/>
+                        <p:commandButton styleClass="ui-priority-primary" validateClient="true"
+                                     value="Dodaj izvodjaca" 
+                                     update=":listHoursForm:hoursTable messageeventHoursStartTime messageeventHoursPerformer messageeventHoursEndTime"
+                                     actionListener="#{editFestivalController.addHours()}"
+                                     ajax="true"/>
+                    </h:panelGrid>
+                </h:form>
+                
+                <h:form id="listHoursForm">
+                <p:dataTable var="hours"  id = "hoursTable" value="#{editFestivalController.event.hourses}">
+                            <p:column headerText="Ime izvodjaca">
+                                <p:inputText value="#{hours.performer}" valueChangeListener="#{editFestivalController.changePerformer}"/>
+                            </p:column>
+                            <p:column headerText="Pocetno vreme">
+                                <p:calendar value="#{hours.startTime}" mode="popup" widgetVar="popupTimeWidget"  
+                                    label="Popup time picker" id ="eventHoursStartTime" pattern="MM/dd/yyyy HH:mm:ss"
+                                       required="true" requiredMessage="Neophodan je pocetak nastupa"
+                                       valueChangeListener="#{editFestivalController.changeHour}"/> 
+                            </p:column>
+                            <p:column headerText="Krajnje vreme">
+                                <p:calendar value="#{hours.endTime}" mode="popup" widgetVar="popupTimeWidget"  
+                                    label="Popup time picker" id ="eventHoursEndTime" pattern="MM/dd/yyyy HH:mm:ss" 
+                                       required="true" requiredMessage="Neophodan je kraj nastupa"
+                                       valueChangeListener="#{editFestivalController.changeHour}"/> 
+                            </p:column>
+                </p:dataTable>
+                
+                
+                    <p:commandButton styleClass="ui-priority-primary" 
+                                     value="Sledeci korak" action="#{editFestivalController.activateStep(2)}" 
+                                     ajax="false"/>
+                </h:form>
+            </ui:fragment>
+            
+            <ui:fragment rendered="#{editFestivalController.activeIndex eq 2}"
+                         id="fragmentAddThird">
+                <h:form enctype="multipart/form-data">
+                    <center>
+                    <p:panelGrid columns="1">
+                        <h:outputText value="Izaberite slike koje hocete da dodate"/>
+                    <p:fileUpload fileUploadListener="#{editFestivalController.handlePictureUpload}" mode="advanced" dragDropSupport="true"
+                                  multiple="true" sizeLimit="10000000" fileLimit="3" allowTypes="/(\.|\/)(gif|jpe?g|png)$/" update="pictureTable" />
+                    </p:panelGrid>
+                    </center>
+                </h:form>
+                
+                <h:form enctype="multipart/form-data">
+                    <center>
+                    <p:panelGrid columns="1">
+                        <h:outputText value="Izaberite videe koje hocete da dodate"/>
+                        <p:fileUpload fileUploadListener="#{editFestivalController.handleVideoUpload}" mode="advanced" dragDropSupport="true"
+                                      multiple="true" sizeLimit="100000000" fileLimit="3" allowTypes="/(\.|\/)(mp4)$/" update="videoTable"/>
+                    </p:panelGrid>
+                        </center>
+                </h:form>
+                
+                <p:dataTable var="picture" id="pictureTable" value="#{editFestivalController.event.pictures}">
+                            <p:column headerText="Ime">
+                                <center>
+                                <h:outputText value="#{picture.name}"/>
+                                </center>
+                            </p:column>
+                </p:dataTable>
+                
+                <p:dataTable var="video" id = "videoTable" value="#{editFestivalController.event.videos}">
+                            <p:column headerText="Ime" >
+                                <center>
+                                <h:outputText value="#{video.name}"/>
+                                </center>
+                            </p:column>
+                </p:dataTable>
+                
+                
+                <h:form>
+                    <p:commandButton styleClass="ui-priority-primary" 
+                                     value="Promeni festival" action="#{editFestivalController.addNewFestival()}" 
+                                     ajax="false"/>
+                </h:form>
+            </ui:fragment>
+            </ui:define>
+        </ui:composition>
+        
+    </h:body>
+</html>
+

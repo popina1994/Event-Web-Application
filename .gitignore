@@ -1,0 +1,10 @@
+*.jar
+*.mp4
+*.jpg
+*.rar
+*.rarKO
+*.sql
+*.zip
+*.war
+*.txt
+build/

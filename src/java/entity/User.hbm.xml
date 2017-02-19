@@ -1,0 +1,52 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated Feb 14, 2017 6:22:12 PM by Hibernate Tools 4.3.1 -->
+<hibernate-mapping>
+    <class name="entity.User" table="user" catalog="projekat" optimistic-lock="version">
+        <id name="iduser" type="java.lang.Integer">
+            <column name="IDUser" />
+            <generator class="identity" />
+        </id>
+        <property name="userName" type="string">
+            <column name="UserName" length="30" not-null="true">
+                <comment>Korisnicko ime</comment>
+            </column>
+        </property>
+        <property name="password" type="string">
+            <column name="Password" length="12" not-null="true" />
+        </property>
+        <property name="firstName" type="string">
+            <column name="FirstName" length="30" not-null="true" />
+        </property>
+        <property name="lastName" type="string">
+            <column name="LastName" length="30" not-null="true" />
+        </property>
+        <property name="email" type="string">
+            <column name="Email" length="40" not-null="true" />
+        </property>
+        <property name="phone" type="string">
+            <column name="Phone" length="15" not-null="true" />
+        </property>
+        <property name="userType" type="int">
+            <column name="UserType" not-null="true" />
+        </property>
+        <property name="blocked" type="boolean">
+            <column name="Blocked" not-null="true" />
+        </property>
+        <property name="lastAccessTime" type="timestamp">
+            <column name="LastAccessTime" length="19" not-null="true" />
+        </property>
+        <property name="unsoldTickets" type="int">
+            <column name="UnsoldTickets" not-null="true">
+                <comment>Broj karata koje je korisnik rezervisao pa nije prodao</comment>
+            </column>
+        </property>
+        <set name="reservations" table="reservation" inverse="true" lazy="false" fetch="select">
+            <key>
+                <column name="IDUser" not-null="true" />
+            </key>
+            <one-to-many class="entity.Reservation" />
+        </set>
+    </class>
+</hibernate-mapping>

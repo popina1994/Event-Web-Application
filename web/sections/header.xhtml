@@ -1,0 +1,67 @@
+
+<html lang="en-us"
+      xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:pe="http://primefaces.org/ui/extensions">
+    
+    
+
+    
+    <h:form>
+        <p:menubar>
+
+            <p:menuitem value="Povratak na stranicu za registrovanje" 
+                        action="#{homePageController.beginPage()}" rendered="#{not homePageController.isRegisteredUser() and not homePageController.isAdmin()}"/>
+            <p:menuitem value="Pocetna" action="#{startPageController.beginPage()}" rendered="#{homePageController.isRegisteredUser()}"/>
+            <p:menuitem value="Pocetna" action="#{adminPageController.beginPage()}" rendered="#{homePageController.isAdmin()}"/>
+            <p:submenu label="Festival">
+                <p:submenu label="Novi festival" rendered="#{homePageController.isAdmin()}">
+                    <p:menuitem value="Novi festival klasicno" action="#{newFestivalRegularController.beginPage()}"/>
+                    <p:menuitem value="Novi festival fajlovima" action="#{newFestivalFileController.beginPage()}"/>
+                </p:submenu>
+
+                <p:submenu label="Pregled top festivala">
+                    <p:menuitem value="Najbolje ocenjeni" action="#{topRatedEventController.beginPage()}"/>
+                </p:submenu>
+
+                <p:submenu label="Rezervacije" rendered="#{homePageController.isAdmin() || homePageController.isRegisteredUser()}">
+                    <p:menuitem value="Pogledaj rezervisane ulaznice" rendered="#{homePageController.isRegisteredUser()}"
+                                action="#{reservationController.showReservations(homePageController.curUser)}"/>
+                    <p:menuitem value="Prodaj ulaznice" rendered="#{homePageController.isAdmin()}" 
+                                action="#{ticketSellController.beginPage()}"/>
+                 </p:submenu>
+                <p:submenu label="Utisci" rendered="#{homePageController.isAdmin()}">
+                    <p:menuitem value="Dodaj video" action="#{videoApprovalController.beginPage()}"/>
+                    <p:menuitem value="Dodaj sliku" action="#{pictureApprovalController.beginPage()}"/>
+                </p:submenu>
+
+            </p:submenu>
+            
+            
+                <p:submenu label="Korisnici"
+                           rendered="#{homePageController.isAdmin()}">
+                    <p:menuitem value="Dodaj nove korisnike" action="#{newUserController.beginPage()}"/>
+                    <p:menuitem value="Pogledaj poslednje korisnike" action="#{lastUserPageController.beginPage()}"/>
+                </p:submenu>
+            <p:menuitem value="Poruke" rendered="#{homePageController.isRegisteredUser()}"
+                        action="#{messagePageController.viewMessages(homePageController.curUser)}"/>
+            
+            <p:menuitem value="Pretraga festivala" action="#{searchController.beginPage()}"/>
+
+            
+            <f:facet name="options" >
+                  <p:commandButton action="#{homePageController.logout()}" 
+                                   rendered="#{not empty homePageController.curUser}"
+                                   value="Logout" icon="ui-icon-extlink"
+                                   ajax="false"
+                                   />
+            </f:facet>
+        </p:menubar>
+    </h:form>
+
+</html>
+
+

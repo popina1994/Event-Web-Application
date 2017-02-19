@@ -1,0 +1,91 @@
+<?xml version='1.0' encoding='UTF-8' ?> 
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:pe="http://primefaces.org/ui/extensions">
+
+    <h:head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+        <h:outputStylesheet name="/css/bootstrap.css"/>
+            <div id="head" class="head">
+            <ui:insert name="head">Content</ui:insert>
+            </div>
+    </h:head>
+    <style>
+         .ui-layout-north {
+        z-index:20 !important;
+        overflow:visible !important;
+    }
+
+    .ui-layout-north .ui-layout-unit-content {
+        overflow:visible !important;
+    }
+    </style>
+    
+    
+    <h:body>
+        
+        <p:layout fullPage="true">
+            <p:layoutUnit position="north" size="40">
+                <div id="header">
+                    <ui:insert name="header" />
+                    <ui:include src="/sections/header.xhtml"></ui:include>
+                    
+                </div>
+            </p:layoutUnit>
+            <p:layoutUnit position="center">
+                <div id="content" class="content">
+                    <ui:insert name="content">Content</ui:insert>
+                </div>
+            </p:layoutUnit>
+
+            <p:layoutUnit position="south" size="90">
+                <div id="footer" class="footer">
+                    <ui:include src="/sections/footer.xhtml"></ui:include>
+                    <!-- ovde mogu dodati <ui:insert> -->
+                </div>
+            </p:layoutUnit>
+            
+            <p:layoutUnit position="west" size="300">
+                <h:form>
+                    <p:calendar id="menuDate"  mode="inline" >
+                        <p:ajax event="dateSelect" listener="#{calendarController.dateChange}" update="calendarEventTable"/>
+                    </p:calendar>
+
+                    <p:dataTable var="hoursCalendar" value="#{calendarController.listHours}" widgetVar="eventCalendarTable"
+                                 emptyMessage="Nema festivala sa zadatim kriterijumom pretrage"
+                                  id="calendarEventTable" >
+                        <p:column >
+                            <h:outputText value="#{hoursCalendar.performer}"/>
+                        </p:column>
+                        
+                        <p:column >
+                            <h:outputText value="#{hoursCalendar.startTime}"> 
+                                <f:convertDateTime pattern="HH:mm" timeZone="CET"/>
+                            </h:outputText>
+                        </p:column>
+
+                        <p:column >
+                            <h:outputText value="#{hoursCalendar.endTime}"> 
+                                <f:convertDateTime pattern="HH:mm" timeZone="CET"/>
+                            </h:outputText>
+                        </p:column>
+
+
+                    <p:column rendered="#{homePageController.isRegisteredUser()}">
+                        <p:commandButton value="Vise" action="#{festivalPageController.viewFestival(hoursCalendar.event, homePageController.curUser)}"/>
+                    </p:column>
+
+                    </p:dataTable>
+                </h:form>
+                    
+            </p:layoutUnit>
+        </p:layout>
+    </h:body>
+        
+
+</html>
